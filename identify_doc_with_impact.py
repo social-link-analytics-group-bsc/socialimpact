@@ -81,8 +81,6 @@ if __name__ == '__main__':
     print(f'Found {total_pdfs} pdf files...')
     # search occurrences of impact words
     processed_data = dict()
-    pos_tags = {'nouns': ['NN', 'NNS', 'NNP', 'NNPS'],
-                'verb': ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']}
     # loop through all pdf files
     for i, name_and_path in enumerate(pdf_file_names):
         pdf_file_name, file_path = name_and_path
@@ -126,20 +124,11 @@ if __name__ == '__main__':
                 for impact_word in impact_words:
                     impact_tokens = word_tokenize(impact_word)
                     reg_verb, reg_noun = impact_tokens[0], ' '.join(impact_tokens[1:])
-                    #if reg_verb == 'provide':
-                    #    pass
                     reg_exp = r'^[\w\s]+{verb}\s[\w\s]*{noun}[\w\s]*$'.format(verb=reg_verb, noun=reg_noun)
                     if re.search(reg_exp, lemma_sentence):
                         if sentence_dependencies.get(reg_verb):
                             if reg_noun in sentence_dependencies[reg_verb]:
                                 occurrences.add(impact_word)
-                    #occurrences_counter = 0
-                    #for impact_token in impact_tokens:
-                    #    if impact_token in lemma_tokens:
-                    #        occurrences_counter += 1
-                    #if occurrences_counter == len(impact_tokens):
-                    #    occurrences.append(impact_word)
-                    #    break
                 if len(occurrences) > 0:
                     found_sentence = ' '.join(sentence_to_nlp)
                     found_impact_word = ', '.join(occurrences)
@@ -151,44 +140,6 @@ if __name__ == '__main__':
                             'found_tokens': found_impact_word
                         }
                     )
-
-
-                #clean_sentences.append(' '.join(normalized_sentence))
-            # iterate over clean sentences and find occurrences
-            #for clean_sentence in clean_sentences:
-            #    sentence_tokens = word_tokenize(clean_sentence)
-
-
-
-
-                #nouns, verbs = [], []
-
-                    # take only nouns and verbs
-                #    token, tag = tagged_token
-                #    if tag in pos_tags['nouns']:
-                #        nouns.append(token)
-                #    if tag in pos_tags['verb']:
-                #        verbs.append(token)
-                # found_tokens = []
-                # for verb in verbs:
-                #     lemma = ' '.join(lemmatize_verbs(verb.split()))
-                #     if lemma in impact_words['verb']:
-                #         found_tokens.append(verb)
-                # if len(found_tokens) > 0:
-                #     found_nouns = []
-                #     for noun in nouns:
-                #         base_noun = ' '.join(stem_words(noun.split()))
-                #         if base_noun in impact_words['noun']:
-                #             found_nouns.append(noun)
-                #     found_tokens.extend(found_nouns)
-                #     print(f'Found {len(found_tokens)} potential occurrence of impact')
-                #     processed_data[pdf_file_name]['impact_occurrences'].append(
-                #         {
-                #             'page': page_num,
-                #             'sentence': clean_sentence,
-                #             'found_tokens': ', '.join(found_tokens)
-                #         }
-                #     )
         if len(processed_data[pdf_file_name]['impact_occurrences']) > 0:
             docs_with_occurrences += 1
         record_processed_file(output_dir, file_path)
