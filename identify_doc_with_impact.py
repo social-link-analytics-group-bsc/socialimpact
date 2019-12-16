@@ -60,7 +60,6 @@ if __name__ == '__main__':
     # load impact words
     print('Building impact dictionary...')
     impact_words = build_impact_dictionary(data_dir)
-    print(impact_words)
     # get already processed files if there are any
     print('Getting the name of the already processed files...')
     processed_files = get_processed_files(output_dir)
